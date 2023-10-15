@@ -14,7 +14,7 @@ metadata:
   name: InternBinding
   namespace: dev
 subjects:
-  kind: User
+- kind: User
   name: Jules
   apiGroup: rbac.authorization.k8s.io
 roleRef:
