@@ -4,24 +4,22 @@ metadata:
   name: deploy
 spec:
   params:
-    - name: REPO_URL
-      type: string
     - name: NAMESPACE
       type: string
     - name: IMAGE
       type: string
+    - name: REPO_URL
+      type: string
   steps:
     - name: clone-repo
-      image: alpine/git
-      script:
-        - git clone $(params.REPO_URL) /workspace/source
-
-    - name: apply-deployment
       image: lachlanevenson/k8s-kubectl
-      script:
-        - kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml
+      script: |
+        apk add git
+        git clone $(params.REPO_URL) /workspace/source
+        kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml
 
     - name: update-deployment-image
       image: lachlanevenson/k8s-kubectl
-      script:
-        - kubectl set image deployment/nginx-deployment nginx=$(params.IMAGE) -n=$(params.NAMESPACE)
+      script: |
+        apk add git
+        kubectl set image deployment/nginx-deployment nginx=$(params.IMAGE) -n=$(params.NAMESPACE)

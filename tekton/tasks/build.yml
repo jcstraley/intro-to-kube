@@ -1,10 +1,23 @@
-- name: npm-install
-  image: node
-  command:
-    - /bin/sh
-    - -c
-    - npm install
-  resources:
-    inputs:
-      - name: source
-        type: git
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build
+spec:
+  params:
+    - name: REPO_URL
+      type: string
+  steps:
+    - name : clone-repo
+      image: alpine/git
+      script: |
+        git clone $(params.REPO_URL) /workspace/source
+    - name: npm-install
+      image: node
+      command: ["npm"]
+      args: ["install"]
+      workingDir: /workspace/source
+    - name: npm-test
+      image: node
+      command: ["npm"]
+      args: ["test"]
+      workingDir: /workspace/source
