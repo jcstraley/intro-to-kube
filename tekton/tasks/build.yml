@@ -1,35 +1,10 @@
-apiVersion: tekton.dev/v1beta1
-kind: Task
-metadata:
-  name: build
-spec:
-  params:
-    - name: REPO_URL
-      type: string
-  steps:
-    - name: clone-repo
-      image: alpine/git
-      script:
-        - git clone $(params.REPO_URL) /workspace/source
-      resources:
-        inputs:
-          - name: source
-            type: git
-    - name: npm-install
-      image: node
-      script:
-        - cd /workspace/source
-        - npm install
-      resources:
-        inputs:
-          - name: source
-            type: git
-    - name: npm-test
-      image: node
-      script:
-        - cd /workspace/source
-        - npm test
-      resources:
-        inputs:
-          - name: source
-            type: git
+- name: npm-install
+  image: node
+  command:
+    - /bin/sh
+    - -c
+    - npm install
+  resources:
+    inputs:
+      - name: source
+        type: git
